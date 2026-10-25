@@ -28,8 +28,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
-      <body className={`${spaceGrotesk.variable} ${manrope.variable}`}>
+    <html lang="pt-BR" className={`${spaceGrotesk.variable} ${manrope.variable}`}>
+      <body>
         {children}
       </body>
     </html>

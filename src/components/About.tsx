@@ -1,52 +1,117 @@
+"use client";
+
+import { useRef } from "react";
+import { projects } from "@/data/projects";
+import { toolGroups } from "@/data/tools";
+import { gsap, MOTION, SplitText, useGSAP } from "@/lib/gsap";
+import { revealSection } from "@/lib/reveal";
+
+const toolCount = toolGroups.reduce((sum, group) => sum + group.items.length, 0);
+
+const stats = [
+  { value: projects.length, label: "projetos em destaque" },
+  { value: toolCount, label: "ferramentas no loadout" },
+  { value: toolGroups.length, label: "frentes de atuação" },
+];
+
 export function About() {
+  const rootRef = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add(MOTION, () => {
+        const root = rootRef.current!;
+        revealSection(root);
+
+        // Cada palavra do manifesto acende conforme a rolagem.
+        SplitText.create(".manifesto", {
+          type: "words",
+          autoSplit: true,
+          onSplit: (self) =>
+            gsap.fromTo(
+              self.words,
+              { opacity: 0.12 },
+              {
+                opacity: 1,
+                ease: "none",
+                stagger: 0.1,
+                scrollTrigger: {
+                  trigger: ".manifesto",
+                  start: "top 80%",
+                  end: "bottom 45%",
+                  scrub: true,
+                },
+              }
+            ),
+        });
+
+        root.querySelectorAll<HTMLElement>(".about-stat-value").forEach((el) => {
+          const target = Number(el.dataset.value);
+          const counter = { value: 0 };
+          gsap.to(counter, {
+            value: target,
+            duration: 1.6,
+            ease: "power2.out",
+            scrollTrigger: { trigger: el, start: "top 90%" },
+            onUpdate: () => {
+              el.textContent = String(Math.round(counter.value)).padStart(2, "0");
+            },
+          });
+        });
+
+        gsap.from(".status-row", {
+          clipPath: "inset(0 100% 0 0)",
+          duration: 0.7,
+          ease: "power3.inOut",
+          stagger: 0.15,
+          scrollTrigger: { trigger: ".status-board", start: "top 85%" },
+        });
+      });
+    },
+    { scope: rootRef }
+  );
+
   return (
-    <section id="sobre" className="section about">
-      <p className="eyebrow">01 // status</p>
-      <h2>quem sou</h2>
+    <section id="sobre" className="section about" ref={rootRef}>
+      <p className="eyebrow">01 // quem sou</p>
+      <h2>por trás da silhueta</h2>
+
+      <p className="manifesto">
+        Sou desenvolvedor focado em <em>interfaces</em> e <em>automação</em>.
+        Construo fluxos que tiram trabalho repetitivo do caminho e sistemas que
+        aguentam o uso real, do protótipo à entrega. Prefiro stack enxuto e
+        responsabilidade clara: <em>menos ruído, mais resultado.</em>
+      </p>
+
       <div className="about-layout">
-        <div className="about-copy">
-          <p className="lead">
-            Sou desenvolvedor focado em automação e sistemas web. Construo
-            fluxos que tiram trabalho repetitivo do caminho e APIs/interfaces
-            que aguentam o uso real, do protótipo à entrega.
-          </p>
-          <p className="about-body">
-            Prefiro stack enxuto e responsabilidade clara: linguagem certa,
-            interface objetiva, API estável, dados organizados e operação
-            previsível. Menos ruído, mais resultado.
-          </p>
-          <div className="about-stats" aria-label="Destaques">
-            <div className="about-stat">
-              <span className="about-stat-value">full stack</span>
-              <span className="about-stat-label">atuação</span>
+        <div className="about-stats" aria-label="Destaques" data-reveal>
+          {stats.map((stat) => (
+            <div className="about-stat" key={stat.label}>
+              <span className="about-stat-value" data-value={stat.value}>
+                {String(stat.value).padStart(2, "0")}
+              </span>
+              <span className="about-stat-label">{stat.label}</span>
             </div>
-            <div className="about-stat">
-              <span className="about-stat-value">remoto</span>
-              <span className="about-stat-label">modo</span>
-            </div>
-            <div className="about-stat">
-              <span className="about-stat-value">entrega</span>
-              <span className="about-stat-label">foco</span>
-            </div>
-          </div>
+          ))}
         </div>
         <dl className="status-board" aria-label="Status atual">
           <div className="status-row">
             <dt>classe</dt>
-            <dd>dev · automação · full stack</dd>
+            <dd>dev · frontend · full stack</dd>
           </div>
           <div className="status-row">
             <dt>foco</dt>
-            <dd>processos · APIs · interfaces</dd>
+            <dd>interfaces · APIs · automação</dd>
           </div>
           <div className="status-row">
             <dt>stack</dt>
-            <dd>python · angular · sql</dd>
+            <dd>angular · typescript · python</dd>
           </div>
           <div className="status-row">
             <dt>modo</dt>
             <dd>
-              <span className="status-live" /> aberto a missões
+              <span className="status-live" /> aberto a oportunidades
             </dd>
           </div>
         </dl>

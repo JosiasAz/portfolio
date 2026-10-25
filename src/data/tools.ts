@@ -8,7 +8,7 @@ export type ToolGroup = {
   items: Tool[];
 };
 
-const si = (slug: string) => `https://cdn.simpleicons.org/${slug}/e8e8e8`;
+const si = (slug: string) => `https://cdn.simpleicons.org/${slug}/ecf3ef`;
 
 export const toolGroups: ToolGroup[] = [
   {

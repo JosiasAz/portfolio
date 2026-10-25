@@ -4,16 +4,19 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { MusicToggle } from "@/components/MusicToggle";
+import { Preloader } from "@/components/Preloader";
 import { Projects } from "@/components/Projects";
-import { RevealObserver } from "@/components/RevealObserver";
 import { Screens } from "@/components/Screens";
-import { SkyBackground } from "@/components/SkyBackground";
+import { ScrollProgress } from "@/components/ScrollProgress";
+import { SmokeBackground } from "@/components/SmokeBackground";
 import { Tools } from "@/components/Tools";
 
 export default function HomePage() {
   return (
     <>
-      <SkyBackground />
+      <Preloader />
+      <SmokeBackground />
+      <ScrollProgress />
       <Header />
       <main id="topo">
         <Hero />
@@ -25,7 +28,6 @@ export default function HomePage() {
       </main>
       <Footer />
       <MusicToggle />
-      <RevealObserver />
     </>
   );
 }

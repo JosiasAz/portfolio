@@ -1,12 +1,53 @@
+"use client";
+
 import Image from "next/image";
+import { useRef } from "react";
 import { screens } from "@/data/screens";
+import { gsap, MOTION, useGSAP } from "@/lib/gsap";
+import { revealSection } from "@/lib/reveal";
 
 export function Screens() {
+  const rootRef = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add(MOTION, () => {
+        revealSection(rootRef.current!);
+
+        gsap.utils.toArray<HTMLElement>(".screen-card").forEach((card) => {
+          const frame = card.querySelector(".screen-frame");
+          const img = card.querySelector(".screen-frame img");
+
+          gsap
+            .timeline({ scrollTrigger: { trigger: card, start: "top 85%" } })
+            .from(card, { y: 32, autoAlpha: 0, duration: 0.9, ease: "power3.out" })
+            .from(
+              frame,
+              { clipPath: "inset(100% 0% 0% 0%)", duration: 1.1, ease: "power3.inOut" },
+              0
+            );
+
+          gsap.fromTo(
+            img,
+            { yPercent: -5 },
+            {
+              yPercent: 5,
+              ease: "none",
+              scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: true },
+            }
+          );
+        });
+      });
+    },
+    { scope: rootRef }
+  );
+
   return (
-    <section id="telas" className="section screens">
+    <section id="telas" className="section screens" ref={rootRef}>
       <p className="eyebrow">04 // telas</p>
       <h2>previews</h2>
-      <p className="lead">
+      <p className="lead" data-reveal>
         Telas reais dos projetos: demos no ar e páginas dos repositórios.
       </p>
 
@@ -26,13 +67,16 @@ export function Screens() {
                 <span />
                 <p>{screen.chrome}</p>
               </div>
-              <Image
-                src={screen.image}
-                alt={screen.alt}
-                width={1400}
-                height={1050}
-                loading="lazy"
-              />
+              <div className="screen-image">
+                <Image
+                  src={screen.image}
+                  alt={screen.alt}
+                  width={1400}
+                  height={1050}
+                  sizes="(max-width: 767px) 92vw, 46vw"
+                  loading="lazy"
+                />
+              </div>
             </div>
             <div className="screen-meta">
               <span className="screen-label">{screen.label}</span>
