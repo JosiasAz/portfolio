@@ -1,12 +1,12 @@
 "use client";
 
 import { useRef } from "react";
-import { projects } from "@/data/projects";
+import type { Project } from "@/data/projects";
 import { site } from "@/data/site";
 import { gsap, MOTION, useGSAP } from "@/lib/gsap";
 import { revealSection } from "@/lib/reveal";
 
-export function Projects() {
+export function Projects({ projects }: { projects: Project[] }) {
   const rootRef = useRef<HTMLElement>(null);
 
   useGSAP(
