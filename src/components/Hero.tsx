@@ -77,10 +77,10 @@ export function Hero() {
       <div className="hero-media">
         <div className="hero-photo">
           <Image
-            src="/assets/josias-silhueta.webp"
+            src="/assets/rostojo.jpg"
             alt={`Retrato de ${site.name} em contraluz`}
-            width={1530}
-            height={2048}
+            width={896}
+            height={1195}
             // Já vem tratada (cor, grão, WebP 90); a recompressão do Next criaria faixas no escuro.
             unoptimized
             priority
