@@ -1,4 +1,5 @@
 import { projects, type Project } from "@/data/projects";
+import { screenImages, type Screen } from "@/data/screens";
 import { site } from "@/data/site";
 
 type Repo = {
@@ -43,4 +44,26 @@ export async function getProjects(): Promise<Project[]> {
     console.error("getProjects:", err);
     return projects;
   }
+}
+
+// Previews: só demos que respondem HTML (front-end); APIs que devolvem JSON ficam de fora.
+export async function getScreens(list: Project[]): Promise<Screen[]> {
+  const demos = list.flatMap((p) => p.links.filter((l) => l.label === "demo").map((l) => ({ p, href: l.href })));
+  const screens = await Promise.all(
+    demos.map(async ({ p, href }): Promise<Screen | null> => {
+      const res = await fetch(href, { signal: AbortSignal.timeout(5000) }).catch(() => null);
+      if (!res?.ok || !res.headers.get("content-type")?.includes("text/html")) return null;
+      return {
+        href,
+        chrome: new URL(href).host,
+        image:
+          screenImages[href] ??
+          `https://api.microlink.io/?url=${encodeURIComponent(href)}&screenshot=true&meta=false&embed=screenshot.url&viewport.width=1400&viewport.height=1050&waitForTimeout=2000`,
+        alt: `Tela do ${p.title}`,
+        label: `${p.index} · demo`,
+        title: p.title,
+      };
+    })
+  );
+  return screens.filter((s) => s !== null);
 }

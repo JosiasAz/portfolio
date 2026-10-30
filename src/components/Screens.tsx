@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import { useRef } from "react";
-import { screens } from "@/data/screens";
+import type { Screen } from "@/data/screens";
 import { gsap, MOTION, useGSAP } from "@/lib/gsap";
 import { revealSection } from "@/lib/reveal";
 
-export function Screens() {
+export function Screens({ screens }: { screens: Screen[] }) {
   const rootRef = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -48,7 +48,7 @@ export function Screens() {
       <p className="eyebrow">04 // telas</p>
       <h2>previews</h2>
       <p className="lead" data-reveal>
-        Telas reais dos projetos: demos no ar e páginas dos repositórios.
+        Telas reais dos sistemas no ar.
       </p>
 
       <div className="screen-grid">

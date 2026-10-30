@@ -10,13 +10,14 @@ import { Screens } from "@/components/Screens";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { SmokeBackground } from "@/components/SmokeBackground";
 import { Tools } from "@/components/Tools";
-import { getProjects } from "@/lib/github";
+import { getProjects, getScreens } from "@/lib/github";
 
 // Revalida a cada 60s: repos novos com o topic "portfolio" aparecem em ~1 min.
 export const revalidate = 60;
 
 export default async function HomePage() {
   const projects = await getProjects();
+  const screens = await getScreens(projects);
 
   return (
     <>
@@ -29,7 +30,7 @@ export default async function HomePage() {
         <About />
         <Tools />
         <Projects projects={projects} />
-        <Screens />
+        <Screens screens={screens} />
         <Contact />
       </main>
       <Footer />
