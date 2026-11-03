@@ -7,7 +7,7 @@ export const site = {
   githubHandle: "@JosiasAz",
   linkedin: "https://www.linkedin.com/in/josiasaz",
   linkedinHandle: "/in/josiasaz",
-  description: "Josias Azevedo, desenvolvedor. Portfólio.",
+  description: "Josias Azevedo, desenvolvedor full stack. Portfólio.",
 } as const;
 
 export const navLinks = [

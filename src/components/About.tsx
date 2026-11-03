@@ -98,7 +98,7 @@ export function About() {
         <dl className="status-board" aria-label="Status atual">
           <div className="status-row">
             <dt>classe</dt>
-            <dd>dev · frontend · full stack</dd>
+            <dd>dev · full stack</dd>
           </div>
           <div className="status-row">
             <dt>foco</dt>

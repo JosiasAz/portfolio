@@ -103,7 +103,7 @@ export function Hero() {
           <span className="status-live" /> disponível para projetos
         </p>
         <p className="hero-lead" data-hero-in>
-          Desenvolvedor frontend &amp; full stack. Transformo processos manuais em
+          Desenvolvedor full stack. Transformo processos manuais em
           sistemas que <em>rodam sozinhos</em>.
         </p>
         <div className="hero-actions" data-hero-in>

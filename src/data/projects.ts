@@ -27,7 +27,7 @@ export const projects: Project[] = [
     title: "SIGPS",
     tags: "HTML · Python · Machine Learning",
     description:
-      "Sistema de prioridade inteligente no atendimento em saúde. Front, backend e modelo de ML para cálculo de prioridade.",
+      "Sistema de prioridade inteligente no atendimento em saúde. Full stack com modelo de ML para cálculo de prioridade.",
     links: [
       { label: "frontend", href: "https://github.com/JosiasAz/SIGPS-Frontend" },
       { label: "backend", href: "https://github.com/JosiasAz/SIGPS-Backend" },
