@@ -98,7 +98,7 @@ export function Hero() {
         </span>
       </h1>
 
-      <div className="hero-side hero-side--left">
+      <div className="hero-side">
         <p className="hero-available" data-hero-in>
           <span className="status-live" /> disponível para projetos
         </p>
@@ -106,6 +106,12 @@ export function Hero() {
           Desenvolvedor full stack. Transformo processos manuais em
           sistemas que <em>rodam sozinhos</em>.
         </p>
+        <ul className="hero-tags" aria-label="Stack principal" data-hero-in>
+          <li>Angular</li>
+          <li>TypeScript</li>
+          <li>Python</li>
+          <li>APIs</li>
+        </ul>
         <div className="hero-actions" data-hero-in>
           <a className="btn btn-primary" href="#projetos">
             ver projetos
@@ -114,19 +120,6 @@ export function Hero() {
             falar comigo
           </a>
         </div>
-      </div>
-
-      <div className="hero-side hero-side--right">
-        <ul className="hero-tags" aria-label="Foco" data-hero-in>
-          <li>Angular</li>
-          <li>TypeScript</li>
-          <li>Python</li>
-          <li>APIs</li>
-        </ul>
-        <a className="scroll-hint" href="#sobre" data-hero-in>
-          <span>role para descobrir</span>
-          <span className="scroll-hint-line" aria-hidden="true" />
-        </a>
       </div>
 
       <p className="hero-whisper" aria-hidden="true">

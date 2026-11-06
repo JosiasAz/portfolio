@@ -1,0 +1,36 @@
+name: Prints dos projetos
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      refresh:
+        description: "Refazer todos os prints"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm install --no-save playwright tsx && npx playwright install --with-deps chromium
+      - run: npx tsx scripts/screenshots.ts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REFRESH: ${{ inputs.refresh }}
+      - name: Commit dos prints novos
+        run: |
+          git config user.name "JosiasAz"
+          git config user.email "jjosias00@gmail.com"
+          git add public/screens src/data/screenshots.json
+          git diff --cached --quiet || (git commit -m "Atualiza prints dos projetos" && git push)

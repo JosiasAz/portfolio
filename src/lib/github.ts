@@ -1,4 +1,5 @@
 import { projects, type Project } from "@/data/projects";
+import screenshots from "@/data/screenshots.json";
 import { screenImages, type Screen } from "@/data/screens";
 import { site } from "@/data/site";
 
@@ -46,24 +47,27 @@ export async function getProjects(): Promise<Project[]> {
   }
 }
 
-// Previews: só demos que respondem HTML (front-end); APIs que devolvem JSON ficam de fora.
-export async function getScreens(list: Project[]): Promise<Screen[]> {
+// Nome do arquivo do print em public/screens/ (gerado por scripts/screenshots.ts).
+export const screenSlug = (href: string) =>
+  (new URL(href).host + new URL(href).pathname).replace(/[^a-z0-9]+/gi, "-").replace(/-+$/, "").toLowerCase();
+
+// Demos com front-end: só links que respondem HTML; APIs que devolvem JSON ficam de fora.
+export async function getDemos(list: Project[]) {
   const demos = list.flatMap((p) => p.links.filter((l) => l.label === "demo").map((l) => ({ p, href: l.href })));
-  const screens = await Promise.all(
-    demos.map(async ({ p, href }): Promise<Screen | null> => {
-      const res = await fetch(href, { signal: AbortSignal.timeout(5000) }).catch(() => null);
-      if (!res?.ok || !res.headers.get("content-type")?.includes("text/html")) return null;
-      return {
-        href,
-        chrome: new URL(href).host,
-        image:
-          screenImages[href] ??
-          `https://api.microlink.io/?url=${encodeURIComponent(href)}&screenshot=true&meta=false&embed=screenshot.url&viewport.width=1400&viewport.height=1050&waitForTimeout=2000`,
-        alt: `Tela do ${p.title}`,
-        label: `${p.index} · demo`,
-        title: p.title,
-      };
+  const checked = await Promise.all(
+    demos.map(async (d) => {
+      const res = await fetch(d.href, { signal: AbortSignal.timeout(5000) }).catch(() => null);
+      return res?.ok && res.headers.get("content-type")?.includes("text/html") ? d : null;
     })
   );
-  return screens.filter((s) => s !== null);
+  return checked.filter((d) => d !== null);
+}
+
+// Previews: demo com print feito à mão ou já capturado pela Action; sem print ainda, fica de fora.
+export async function getScreens(list: Project[]): Promise<Screen[]> {
+  return (await getDemos(list)).flatMap(({ p, href }) => {
+    const image = screenImages[href] ?? ((screenshots as string[]).includes(screenSlug(href)) ? `/screens/${screenSlug(href)}.jpg` : null);
+    if (!image) return [];
+    return [{ href, chrome: new URL(href).host, image, alt: `Tela do ${p.title}`, label: `${p.index} · demo`, title: p.title }];
+  });
 }

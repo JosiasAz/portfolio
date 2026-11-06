@@ -27,7 +27,7 @@ export default async function HomePage() {
       <Header />
       <main id="topo">
         <Hero />
-        <About />
+        <About projectCount={projects.length} />
         <Tools />
         <Projects projects={projects} />
         <Screens screens={screens} />
