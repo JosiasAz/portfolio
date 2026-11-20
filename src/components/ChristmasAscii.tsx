@@ -16,6 +16,20 @@ const MID = (FLOOR + H + 0.18) / 2;
 const D = 4;
 const TILT = -0.22;
 const RAMP = " .:-=+*#%@";
+// letras 5x7 para o letreiro "FELIZ" / "NATAL"
+const GLYPHS: Record<string, string[]> = {
+  F: ["#####", "#....", "#....", "####.", "#....", "#....", "#...."],
+  E: ["#####", "#....", "#....", "####.", "#....", "#....", "#####"],
+  L: ["#....", "#....", "#....", "#....", "#....", "#....", "#####"],
+  I: ["#####", "..#..", "..#..", "..#..", "..#..", "..#..", "#####"],
+  Z: ["#####", "....#", "...#.", "..#..", ".#...", "#....", "#####"],
+  N: ["#...#", "##..#", "##..#", "#.#.#", "#..##", "#..##", "#...#"],
+  A: [".###.", "#...#", "#...#", "#####", "#...#", "#...#", "#...#"],
+  T: ["#####", "..#..", "..#..", "..#..", "..#..", "..#..", "..#.."],
+};
+const SIGN_COLORS = ["#ffe56a", "#ff3b4e", "#3dff7a", "#3d8dff", "#fff6c2", "#ff9f40"];
+// cada pixel da letra = 2 caracteres de largura x 1 linha (fica quase quadrado)
+const WORD_COLS = (5 * 5 + 4) * 2;
 const LIGHT_DIR = (() => {
   const v = [-0.45, 0.55, -0.7];
   const l = Math.hypot(v[0], v[1], v[2]);
@@ -26,6 +40,11 @@ const HALF = (() => {
   const l = Math.hypot(v[0], v[1], v[2]);
   return v.map((n) => n / l) as [number, number, number];
 })();
+
+function hash(x: number, y: number) {
+  const n = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
+  return n - Math.floor(n);
+}
 
 // layered cone: each of the 6 tiers flares out at its bottom
 function radius(y: number) {
@@ -148,6 +167,36 @@ export function ChristmasAscii() {
     });
     io.observe(canvas);
 
+    // Arrastar gira a árvore; ao soltar ela segue no embalo e volta ao giro normal.
+    const AUTO = reduce ? 0 : 0.35; // rad/s
+    let angle = 0.6;
+    let spin = AUTO;
+    let dragX: number | null = null;
+    let dragT = 0;
+    const onDown = (e: PointerEvent) => {
+      dragX = e.clientX;
+      dragT = e.timeStamp;
+      spin = 0;
+      canvas.setPointerCapture(e.pointerId);
+      canvas.classList.add("is-dragging");
+    };
+    const onMove = (e: PointerEvent) => {
+      if (dragX === null) return;
+      const delta = (e.clientX - dragX) * 0.01;
+      angle += delta;
+      spin = delta / Math.max(0.016, (e.timeStamp - dragT) / 1000);
+      dragX = e.clientX;
+      dragT = e.timeStamp;
+    };
+    const onUp = () => {
+      dragX = null;
+      canvas.classList.remove("is-dragging");
+    };
+    canvas.addEventListener("pointerdown", onDown);
+    canvas.addEventListener("pointermove", onMove);
+    canvas.addEventListener("pointerup", onUp);
+    canvas.addEventListener("pointercancel", onUp);
+
     const draw = (time: number) => {
       if (!alive) return;
       frame = window.requestAnimationFrame(draw);
@@ -198,7 +247,10 @@ export function ChristmasAscii() {
         ctx.fillText(s.ch, s.x * width, s.y * usableH);
       }
 
-      const angle = reduce ? 0.6 : time * 0.00035;
+      if (dragX === null) {
+        spin += (AUTO - spin) * Math.min(1, dt * 1.5);
+        angle += spin * dt;
+      }
       const ca = Math.cos(angle);
       const sa = Math.sin(angle);
       const ct = Math.cos(TILT);
@@ -281,23 +333,69 @@ export function ChristmasAscii() {
         }
       }
 
-      ctx.fillStyle = "#ff4b5c";
-      ctx.font = `${Math.max(12, fontSize + 2)}px ${family}`;
-      ctx.textAlign = "center";
-      ctx.fillText("Feliz Natal", width / 2, height - fontSize * 2.2);
+      // Letreiro: FELIZ à esquerda e NATAL à direita; sem espaço nas laterais (celular), em cima e embaixo.
+      const side = (width - scale * 1.75) / 2;
+      const wide = side > width * 0.16;
+      const signW = wide ? side * 0.86 : width * 0.8;
+      const signFont = Math.max(4, signW / WORD_COLS / 0.6);
+      const sw = signFont * 0.6;
+      const sh = signFont * 1.02;
+      const drawWord = (word: string, centerX: number, centerY: number, seed: number) => {
+        const left = centerX - (WORD_COLS * sw) / 2;
+        const top = centerY - (7 * sh) / 2;
+        for (let li = 0; li < word.length; li += 1) {
+          const glyph = GLYPHS[word[li]];
+          for (let gy = 0; gy < 7; gy += 1) {
+            for (let gx = 0; gx < 5; gx += 1) {
+              if (glyph[gy][gx] !== "#") continue;
+              const n = hash(seed + li * 7 + gx, gy);
+              // cor anda pela palavra como pisca-pisca; brilho pisca por pixel
+              const shift = reduce ? li : Math.floor(time / 450 + li + (gx + gy) * 0.12);
+              const color = SIGN_COLORS[(shift + seed) % SIGN_COLORS.length];
+              const tw = reduce ? 1 : 0.45 + 0.55 * (0.5 + 0.5 * Math.sin(time * 0.005 + n * 12));
+              ctx.globalAlpha = tw;
+              ctx.fillStyle = color;
+              ctx.shadowColor = color;
+              const ch = tw > 0.9 ? "@" : n > 0.5 ? "#" : "*";
+              const x = left + (li * 6 + gx) * 2 * sw;
+              const y = top + gy * sh;
+              ctx.fillText(ch, x, y);
+              ctx.fillText(ch, x + sw, y);
+            }
+          }
+        }
+      };
+      ctx.font = `bold ${signFont}px ${family}`;
+      ctx.textAlign = "left";
+      ctx.shadowBlur = signFont * 0.9;
+      if (wide) {
+        drawWord("FELIZ", side / 2, cy, 0);
+        drawWord("NATAL", width - side / 2, cy, 3);
+      } else {
+        const gap = (height - (cy + scale * 1.05)) / 2;
+        const treeTop = cy - scale * 1.2; // topo da estrela
+        drawWord("FELIZ", width / 2, Math.max(7 * sh * 0.6, treeTop / 2), 0);
+        drawWord("NATAL", width / 2, height - Math.max(7 * sh * 0.6, gap), 3);
+      }
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 1;
     };
 
     frame = window.requestAnimationFrame(draw);
     return () => {
       alive = false;
       io.disconnect();
+      canvas.removeEventListener("pointerdown", onDown);
+      canvas.removeEventListener("pointermove", onMove);
+      canvas.removeEventListener("pointerup", onUp);
+      canvas.removeEventListener("pointercancel", onUp);
       window.cancelAnimationFrame(frame);
     };
   }, []);
 
   return (
     <section className="xmas-screen" id="natal" aria-label="Árvore de Natal 3D em caracteres">
-      <canvas ref={canvasRef} />
+      <canvas ref={canvasRef} title="Arraste para girar a árvore" />
     </section>
   );
 }

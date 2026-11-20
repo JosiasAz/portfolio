@@ -48,6 +48,13 @@ export function MusicToggle() {
 
   useEffect(() => {
     let dead = false;
+    let playing = false;
+    // Toca ao entrar, a menos que a pessoa tenha desligado antes.
+    try {
+      wantPlay.current = localStorage.getItem(STORAGE_KEY) !== "0";
+    } catch {
+      wantPlay.current = true;
+    }
 
     void loadYouTubeApi().then(() => {
       if (dead || !hostRef.current || !window.YT) return;
@@ -70,7 +77,8 @@ export function MusicToggle() {
             if (wantPlay.current) playerRef.current?.playVideo();
           },
           onStateChange: (event: YTStateEvent) => {
-            setOn(event.data === 1);
+            playing = event.data === 1;
+            setOn(playing);
           },
         },
       });
@@ -83,9 +91,19 @@ export function MusicToggle() {
       if (!document.hidden && wantPlay.current) player.playVideo();
     }
 
+    // Navegador bloqueou o autoplay com som: começa na primeira interação com a página.
+    // O próprio botão fica de fora para não tocar e pausar no mesmo clique.
+    function onFirstInteraction(event: Event) {
+      if ((event.target as Element | null)?.closest?.(".music-toggle")) return;
+      if (wantPlay.current && !playing) playerRef.current?.playVideo();
+    }
+    const unlockEvents = ["pointerdown", "keydown", "touchend"] as const;
+    unlockEvents.forEach((type) => document.addEventListener(type, onFirstInteraction, { passive: true }));
+
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
       dead = true;
+      unlockEvents.forEach((type) => document.removeEventListener(type, onFirstInteraction));
       document.removeEventListener("visibilitychange", onVisibility);
       playerRef.current?.destroy();
       playerRef.current = null;
