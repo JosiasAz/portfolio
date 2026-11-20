@@ -1,4 +1,5 @@
 import { About } from "@/components/About";
+import { ChristmasAscii } from "@/components/ChristmasAscii";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -27,6 +28,7 @@ export default async function HomePage() {
       <Header />
       <main id="topo">
         <Hero />
+        <ChristmasAscii />
         <About projectCount={projects.length} />
         <Tools />
         <Projects projects={projects} />

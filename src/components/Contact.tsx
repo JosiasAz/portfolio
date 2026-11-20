@@ -41,7 +41,7 @@ export function Contact() {
                 },
               })
               .from(".contact-title", { scale: 0.85, ease: "none" }, 0)
-              .from(self.chars, { color: "rgba(236,243,239,0.1)", stagger: 0.04, ease: "none" }, 0),
+              .from(self.chars, { color: "rgba(215,255,228,0.28)", stagger: 0.04, ease: "none" }, 0),
         });
 
         gsap.from(".contact-channel, .contact-copy > *", {
@@ -83,13 +83,13 @@ export function Contact() {
 
   return (
     <section id="contato" className="section contact" ref={rootRef}>
-      <p className="eyebrow">05 // missão</p>
+      <p className="eyebrow">contato</p>
       <h2 className="contact-title">bora construir algo?</h2>
       <div className="contact-layout">
         <div className="contact-copy">
           <p className="lead">
             Tem um processo para automatizar, uma interface para construir ou uma
-            vaga em mente? Manda a missão. Respondo com clareza.
+            vaga em mente? Escreve. Respondo com clareza.
           </p>
           <p className="contact-note">
             <span className="status-live" />

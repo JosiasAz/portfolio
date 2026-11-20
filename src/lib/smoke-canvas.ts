@@ -53,7 +53,7 @@ function makeSprite(seed: number) {
   }
 
   g.globalCompositeOperation = "source-in";
-  g.fillStyle = "rgb(170, 196, 184)";
+  g.fillStyle = "rgb(120, 196, 150)";
   g.fillRect(0, 0, size, size);
   return c;
 }
@@ -64,9 +64,9 @@ function makeMoteSprite() {
   c.width = c.height = size;
   const g = c.getContext("2d")!;
   const grad = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-  grad.addColorStop(0, "rgba(167, 243, 208, 1)");
-  grad.addColorStop(0.35, "rgba(52, 211, 153, 0.5)");
-  grad.addColorStop(1, "rgba(52, 211, 153, 0)");
+  grad.addColorStop(0, "rgba(184, 255, 208, 1)");
+  grad.addColorStop(0.35, "rgba(61, 255, 122, 0.45)");
+  grad.addColorStop(1, "rgba(61, 255, 122, 0)");
   g.fillStyle = grad;
   g.fillRect(0, 0, size, size);
   return c;

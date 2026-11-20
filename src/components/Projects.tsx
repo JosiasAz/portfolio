@@ -42,7 +42,7 @@ export function Projects({ projects }: { projects: Project[] }) {
 
   return (
     <section id="projetos" className="section projects" ref={rootRef}>
-      <p className="eyebrow">03 // missões</p>
+      <p className="eyebrow">projetos</p>
       <h2>projetos</h2>
       <p className="lead" data-reveal>
         Seleção do meu{" "}

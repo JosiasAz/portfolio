@@ -12,7 +12,7 @@ export const site = {
 
 export const navLinks = [
   { href: "#sobre", label: "sobre" },
-  { href: "#ferramentas", label: "stack" },
+  { href: "#ferramentas", label: "ferramentas" },
   { href: "#projetos", label: "projetos" },
   { href: "#telas", label: "telas" },
   { href: "#contato", label: "contato" },

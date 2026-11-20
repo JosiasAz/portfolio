@@ -5,6 +5,8 @@ export type Tool = {
 
 export type ToolGroup = {
   title: string;
+  /** domínio de 1 a 5 (quadradinhos em "sobre") */
+  level: number;
   items: Tool[];
 };
 
@@ -13,6 +15,7 @@ const si = (slug: string) => `https://cdn.simpleicons.org/${slug}/ecf3ef`;
 export const toolGroups: ToolGroup[] = [
   {
     title: "linguagens",
+    level: 4,
     items: [
       { name: "Python", icon: si("python") },
       { name: "TypeScript", icon: si("typescript") },
@@ -23,6 +26,7 @@ export const toolGroups: ToolGroup[] = [
   },
   {
     title: "frontend",
+    level: 5,
     items: [
       { name: "Angular", icon: si("angular") },
       { name: "RxJS", icon: si("reactivex") },
@@ -32,6 +36,7 @@ export const toolGroups: ToolGroup[] = [
   },
   {
     title: "backend",
+    level: 5,
     items: [
       { name: "Flask", icon: si("flask") },
       { name: "FastAPI", icon: si("fastapi") },
@@ -42,6 +47,7 @@ export const toolGroups: ToolGroup[] = [
   },
   {
     title: "automação",
+    level: 5,
     items: [
       { name: "Selenium", icon: si("selenium") },
       { name: "OpenCV", icon: si("opencv") },
@@ -51,6 +57,7 @@ export const toolGroups: ToolGroup[] = [
   },
   {
     title: "dados & ml",
+    level: 4,
     items: [
       { name: "MySQL", icon: si("mysql") },
       { name: "SQLite", icon: si("sqlite") },
@@ -61,6 +68,7 @@ export const toolGroups: ToolGroup[] = [
   },
   {
     title: "infra",
+    level: 5,
     items: [
       { name: "Docker", icon: si("docker") },
       { name: "Git", icon: si("git") },

@@ -77,11 +77,11 @@ export function Hero() {
       <div className="hero-media">
         <div className="hero-photo">
           <Image
-            src="/assets/rostojo.jpg"
-            alt={`Retrato de ${site.name} em contraluz`}
-            width={896}
-            height={1195}
-            // Já vem tratada (cor, grão, WebP 90); a recompressão do Next criaria faixas no escuro.
+            src="/assets/josias-original.png"
+            alt={`Retrato de ${site.name}`}
+            width={1254}
+            height={1254}
+            // Recorte com fundo transparente; recompressão come a borda.
             unoptimized
             priority
           />
@@ -103,8 +103,11 @@ export function Hero() {
           <span className="status-live" /> disponível para projetos
         </p>
         <p className="hero-lead" data-hero-in>
-          Desenvolvedor full stack. Transformo processos manuais em
-          sistemas que <em>rodam sozinhos</em>.
+          Desenvolvedor Júnior focado em desenvolvimento de sistemas web, automação de
+          processos (RPA) e aplicações desktop. Com experiência prática na LG Electronics e atuação em projetos
+          junto ao Instituto Eldorado e FPF Tech (LG AIX Academy), tenho vivência em
+          Python, RPA e desenvolvimento full stack. Busco uma oportunidade júnior para
+          construir <em>sistemas web, automações e aplicações desktop</em>.
         </p>
         <ul className="hero-tags" aria-label="Stack principal" data-hero-in>
           <li>Angular</li>

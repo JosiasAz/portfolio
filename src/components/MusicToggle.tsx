@@ -2,83 +2,143 @@
 
 import { useEffect, useRef, useState } from "react";
 
+const VIDEO_ID = "KhqNTjbQ71A";
 const STORAGE_KEY = "portfolio-music-on";
 
+type YTPlayer = {
+  playVideo: () => void;
+  pauseVideo: () => void;
+  destroy: () => void;
+};
+
+type YTStateEvent = { data: number };
+
+declare global {
+  interface Window {
+    YT?: {
+      Player: new (el: HTMLElement, options: object) => YTPlayer;
+    };
+    onYouTubeIframeAPIReady?: () => void;
+  }
+}
+
+function loadYouTubeApi() {
+  if (window.YT?.Player) return Promise.resolve();
+  return new Promise<void>((resolve) => {
+    const previous = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      previous?.();
+      resolve();
+    };
+    if (!document.querySelector("script[data-yt-api]")) {
+      const script = document.createElement("script");
+      script.src = "https://www.youtube.com/iframe_api";
+      script.dataset.ytApi = "1";
+      document.head.appendChild(script);
+    }
+  });
+}
+
 export function MusicToggle() {
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const hostRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<YTPlayer | null>(null);
+  const wantPlay = useRef(false);
   const [on, setOn] = useState(false);
-  const [hint, setHint] = useState("Música");
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.volume = 0.32;
+    let dead = false;
 
-    try {
-      if (localStorage.getItem(STORAGE_KEY) === "1") {
-        setHint("Clique para retomar a música");
-      }
-    } catch {
-      /* ignore */
-    }
+    void loadYouTubeApi().then(() => {
+      if (dead || !hostRef.current || !window.YT) return;
+      playerRef.current = new window.YT.Player(hostRef.current, {
+        videoId: VIDEO_ID,
+        width: "320",
+        height: "180",
+        playerVars: {
+          autoplay: 0,
+          rel: 0,
+          loop: 1,
+          playlist: VIDEO_ID,
+          playsinline: 1,
+          origin: window.location.origin,
+        },
+        events: {
+          onReady: () => {
+            if (dead) return;
+            setReady(true);
+            if (wantPlay.current) playerRef.current?.playVideo();
+          },
+          onStateChange: (event: YTStateEvent) => {
+            setOn(event.data === 1);
+          },
+        },
+      });
+    });
 
     function onVisibility() {
-      if (!audio) return;
-      if (document.hidden && !audio.paused) {
-        audio.dataset.wasPlaying = "1";
-        audio.pause();
-      } else if (!document.hidden && audio.dataset.wasPlaying === "1") {
-        audio.dataset.wasPlaying = "";
-        void audio.play().then(() => setOn(true)).catch(() => setOn(false));
-      }
+      const player = playerRef.current;
+      if (!player) return;
+      if (document.hidden && wantPlay.current) player.pauseVideo();
+      if (!document.hidden && wantPlay.current) player.playVideo();
     }
 
     document.addEventListener("visibilitychange", onVisibility);
-    return () => document.removeEventListener("visibilitychange", onVisibility);
+    return () => {
+      dead = true;
+      document.removeEventListener("visibilitychange", onVisibility);
+      playerRef.current?.destroy();
+      playerRef.current = null;
+    };
   }, []);
 
-  async function toggle() {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (audio.paused) {
+  function toggle() {
+    const player = playerRef.current;
+    if (!player || !ready) {
+      wantPlay.current = true;
       try {
-        await audio.play();
-        setOn(true);
-        try {
-          localStorage.setItem(STORAGE_KEY, "1");
-        } catch {
-          /* ignore */
-        }
+        localStorage.setItem(STORAGE_KEY, "1");
       } catch {
-        setOn(false);
+        /* ignore */
       }
-    } else {
-      audio.pause();
+      return;
+    }
+
+    if (on) {
+      wantPlay.current = false;
+      player.pauseVideo();
       setOn(false);
       try {
         localStorage.setItem(STORAGE_KEY, "0");
       } catch {
         /* ignore */
       }
+      return;
+    }
+
+    wantPlay.current = true;
+    player.playVideo();
+    try {
+      localStorage.setItem(STORAGE_KEY, "1");
+    } catch {
+      /* ignore */
     }
   }
 
   return (
     <>
+      <div className="yt-dock" aria-hidden="true">
+        <div ref={hostRef} />
+      </div>
       <button
         className={`music-toggle${on ? " is-on" : ""}`}
         type="button"
         aria-pressed={on}
-        aria-label={on ? "Desativar música de fundo" : "Ativar música de fundo"}
-        title={hint}
-        onClick={() => void toggle()}
+        aria-label={on ? "Pausar Last Christmas" : "Tocar Last Christmas"}
+        title="Wham! — Last Christmas"
+        onClick={toggle}
       >
-        <svg
-          className="music-icon music-icon-off"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
+        <svg className="music-icon music-icon-off" viewBox="0 0 24 24" aria-hidden="true">
           <path
             d="M11 5 6.5 9H3v6h3.5L11 19V5zM15.5 9.5l5 5m0-5-5 5"
             fill="none"
@@ -88,11 +148,7 @@ export function MusicToggle() {
             strokeLinejoin="round"
           />
         </svg>
-        <svg
-          className="music-icon music-icon-on"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
+        <svg className="music-icon music-icon-on" viewBox="0 0 24 24" aria-hidden="true">
           <path
             d="M11 5 6.5 9H3v6h3.5L11 19V5z"
             fill="none"
@@ -111,13 +167,6 @@ export function MusicToggle() {
         </svg>
         <span className="music-label">som</span>
       </button>
-      <audio
-        ref={audioRef}
-        src="/assets/ambient.wav"
-        loop
-        preload="none"
-        playsInline
-      />
     </>
   );
 }

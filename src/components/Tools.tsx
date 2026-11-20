@@ -88,17 +88,17 @@ export function Tools() {
 
   return (
     <section id="ferramentas" className="section tools-section" ref={rootRef}>
-      <p className="eyebrow">02 // loadout</p>
+      <p className="eyebrow">o que eu uso</p>
       <h2>ferramentas</h2>
 
       <div className="tools-pin">
         <div className="tools-track">
           <p className="tools-intro" aria-hidden="true">
-            o que eu
+            o que eu uso
             <br />
-            levo para
+            em cada
             <br />
-            <em>cada missão</em> →
+            <em>projeto</em> →
           </p>
           {toolGroups.map((group, i) => (
             <div className="tool-block" key={group.title}>
