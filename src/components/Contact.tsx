@@ -83,13 +83,12 @@ export function Contact() {
 
   return (
     <section id="contato" className="section contact" ref={rootRef}>
-      <p className="eyebrow">contato</p>
-      <h2 className="contact-title">bora construir algo?</h2>
+      <h2 className="contact-title">Contato</h2>
       <div className="contact-layout">
         <div className="contact-copy">
           <p className="lead">
-            Tem um processo para automatizar, uma interface para construir ou uma
-            vaga em mente? Escreve. Respondo com clareza.
+            Se o assunto é processo, sistema ou uma conversa sobre supply chain,
+            escreva. Respondo com clareza.
           </p>
           <p className="contact-note">
             <span className="status-live" />

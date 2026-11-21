@@ -42,14 +42,13 @@ export function Projects({ projects }: { projects: Project[] }) {
 
   return (
     <section id="projetos" className="section projects" ref={rootRef}>
-      <p className="eyebrow">projetos</p>
-      <h2>projetos</h2>
+      <h2>Projetos</h2>
       <p className="lead" data-reveal>
-        Seleção do meu{" "}
+        Sistemas e estudos publicados no{" "}
         <a className="inline-link" href={site.github} target="_blank" rel="noopener noreferrer">
           GitHub
         </a>
-        : sistemas web, automação, dados e experimentos com stack real.
+        . Cada um resolve um processo: fila, aviso, financeiro ou painel.
       </p>
 
       <div className="project-list">

@@ -58,8 +58,7 @@ export function About({ projectCount }: { projectCount: number }) {
 
   return (
     <section id="sobre" className="section about" ref={rootRef}>
-      <p className="eyebrow">sobre</p>
-      <h2>o que eu faço</h2>
+      <h2>Sobre</h2>
 
       <div className="about-layout">
         <figure className="player-card">
@@ -79,7 +78,7 @@ export function About({ projectCount }: { projectCount: number }) {
           </div>
           <figcaption className="player-info">
             <strong>{site.name}</strong>
-            <span>dev full stack · Manaus</span>
+            <span>Supply chain · Manaus</span>
             <dl className="player-stats">
               <div>
                 <dt>projetos</dt>
@@ -91,7 +90,7 @@ export function About({ projectCount }: { projectCount: number }) {
               </div>
               <div>
                 <dt>status</dt>
-                <dd className="player-open">aberto a projetos</dd>
+                <dd className="player-open">em atuação</dd>
               </div>
             </dl>
           </figcaption>
@@ -99,9 +98,14 @@ export function About({ projectCount }: { projectCount: number }) {
 
         <div className="about-text">
           <p className="manifesto">
-            Sou focado em <em>lógica</em>, <em>interfaces</em> e <em>automação</em>:
-            penso a regra antes do código, crio telas que as pessoas entendem de
-            primeira e automações que poupam tempo em tarefas repetitivas.
+            Sou estagiário de desenvolvimento em supply chain. O trabalho é
+            organizar processo em sistema: a regra vem antes da tela, e a
+            automação tira do caminho o que a operação repetia à mão.
+          </p>
+          <p className="lead">
+            Passei pela LG Electronics e atuei em projetos com o Instituto
+            Eldorado e a FPF Tech, na LG AIX Academy. No dia a dia uso Python,
+            RPA e desenvolvimento de sistemas web e desktop.
           </p>
 
           <div className="inventory" data-reveal>

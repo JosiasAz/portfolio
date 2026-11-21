@@ -7,13 +7,14 @@ export const site = {
   githubHandle: "@JosiasAz",
   linkedin: "https://www.linkedin.com/in/josiasaz",
   linkedinHandle: "/in/josiasaz",
-  description: "Josias Azevedo, desenvolvedor full stack. Portfólio.",
+  description:
+    "Josias Azevedo, estagiário de desenvolvimento em supply chain. Sistemas, automação e processo.",
 } as const;
 
 export const navLinks = [
-  { href: "#sobre", label: "sobre" },
-  { href: "#ferramentas", label: "ferramentas" },
-  { href: "#projetos", label: "projetos" },
-  { href: "#telas", label: "telas" },
-  { href: "#contato", label: "contato" },
+  { href: "#sobre", label: "Sobre" },
+  { href: "#ferramentas", label: "Competências" },
+  { href: "#projetos", label: "Projetos" },
+  { href: "#trajetoria", label: "Trajetória" },
+  { href: "#contato", label: "Contato" },
 ] as const;

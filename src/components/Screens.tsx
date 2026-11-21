@@ -45,8 +45,7 @@ export function Screens({ screens }: { screens: Screen[] }) {
 
   return (
     <section id="telas" className="section screens" ref={rootRef}>
-      <p className="eyebrow">telas</p>
-      <h2>como fica no ar</h2>
+      <h2>Telas</h2>
       <p className="lead" data-reveal>
         Telas reais dos sistemas no ar.
       </p>

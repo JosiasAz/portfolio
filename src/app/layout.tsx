@@ -1,12 +1,19 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono } from "next/font/google";
+import { Newsreader, Source_Sans_3 } from "next/font/google";
 import { site } from "@/data/site";
 import "./globals.css";
 
-const mono = IBM_Plex_Mono({
+const newsreader = Newsreader({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-display-face",
+  display: "swap",
+});
+
+const sourceSans = Source_Sans_3({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-mono",
+  variable: "--font-body-face",
   display: "swap",
 });
 
@@ -21,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={mono.variable}>
+    <html lang="pt-BR" className={`${newsreader.variable} ${sourceSans.variable}`}>
       <body>
         {children}
       </body>
